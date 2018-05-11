@@ -13,7 +13,9 @@ const choiceOfWords = [
   "RUN FOREST RUN",
   "HELLO HANGMAN",
   "RUBY ON RAILS",
-  "PYTHON"
+  "PYTHON",
+  "DJANGO UNCHAINED",
+  "MACHINE LEARNING"
 ];
 const potentialTries = 6;
 
@@ -25,7 +27,7 @@ function selectWord() {
 function createInitialState() {
   let initialState = {
     potentialTries: potentialTries,
-    displayWord: "",
+    displayImage: hangman0,
     alphabet: [
       ["A", true],
       ["B", true],
@@ -56,6 +58,7 @@ function createInitialState() {
     ]
   };
   initialState.gameWord = selectWord();
+  initialState.displayWord = new Array(initialState.gameWord.length).fill(" ");
   return initialState;
 }
 
@@ -64,7 +67,7 @@ class Hangman extends Component {
     super(props);
     this.state = createInitialState();
     this.handleResetGame = this.handleResetGame.bind(this);
-    this.handleChange = this.handleChange.bind(this);
+    // this.handleChange = this.handleChange.bind(this);
   }
 
   handleResetGame(event) {
@@ -72,26 +75,26 @@ class Hangman extends Component {
     this.setState(createInitialState());
   }
 
-  handleChange(event) {
-    let name = event.target.name;
-    let val = event.target.value;
-    this.setState(prevState => {
-      let newGuess = [...prevState.guess];
-      newGuess[name] = val;
-      return { guess: newGuess };
-    });
-  }
-
   handleLetterClick(idx, chr) {
-    // console.log(this.state.alphabet[idx][0], this.state.alphabet[idx][1]);
+    this.state.gameWord.forEach((val, idx) => {
+      if (chr === val) {
+        this.state.displayWord[idx] = this.state.gameWord[idx];
+      }
+    });
+    console.log(this.state.gameWord);
+    console.log(this.state.displayWord);
     this.setState(prevState => {
       let newAlpha = [...this.state.alphabet];
       newAlpha[idx][1] = false;
-      return { alphabet: newAlpha };
+      let newImg =
+        "hangman" + (potentialTries - this.state.potentialTries).toString();
+      console.log(newImg);
+      return { alphabet: newAlpha, displayImage: newImg };
     });
   }
 
   render() {
+    console.log(this.state);
     let letters = this.state.alphabet.map((arr, idx) => {
       return (
         <Letter
@@ -118,7 +121,7 @@ class Hangman extends Component {
           value="Reset Game"
         />
         <div>
-          <img src={hangman0} />
+          <img src={this.state.displayImage} />
         </div>
       </div>
     );
