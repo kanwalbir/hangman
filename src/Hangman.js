@@ -9,54 +9,67 @@ import hangman4 from "./images/Hangman-4.png";
 import hangman5 from "./images/Hangman-5.png";
 import hangman6 from "./images/Hangman-6.png";
 
-const alphabet = [
-  "A",
-  "B",
-  "C",
-  "D",
-  "E",
-  "F",
-  "G",
-  "H",
-  "I",
-  "J",
-  "K",
-  "L",
-  "M",
-  "N",
-  "O",
-  "P",
-  "Q",
-  "R",
-  "S",
-  "T",
-  "U",
-  "V",
-  "W",
-  "X",
-  "Y",
-  "Z"
+const choiceOfWords = [
+  "RUN FOREST RUN",
+  "HELLO HANGMAN",
+  "RUBY ON RAILS",
+  "PYTHON"
 ];
+const potentialTries = 6;
 
-const words = ["RUN FOREST RUN", "HELLO HANGMAN", "RUBY ON RAILS", "PYTHON"];
-let gameWord = words[Math.floor(words.length * Math.random())].split("");
+function selectWord() {
+  let i = Math.floor(choiceOfWords.length * Math.random());
+  return choiceOfWords[i].split("");
+}
 
-const initialState = {
-  guess: ["", "", "", "", "", "", "", "", "", ""],
-  potentialTries: 6
-};
+function createInitialState() {
+  let initialState = {
+    potentialTries: potentialTries,
+    displayWord: "",
+    alphabet: [
+      ["A", true],
+      ["B", true],
+      ["C", true],
+      ["D", true],
+      ["E", true],
+      ["F", true],
+      ["G", true],
+      ["H", true],
+      ["I", true],
+      ["J", true],
+      ["K", true],
+      ["L", true],
+      ["M", true],
+      ["N", true],
+      ["O", true],
+      ["P", true],
+      ["Q", true],
+      ["R", true],
+      ["S", true],
+      ["T", true],
+      ["U", true],
+      ["V", true],
+      ["W", true],
+      ["X", true],
+      ["Y", true],
+      ["Z", true]
+    ]
+  };
+  initialState.gameWord = selectWord();
+  return initialState;
+}
 
 class Hangman extends Component {
   constructor(props) {
     super(props);
-    this.state = initialState;
+    this.state = createInitialState();
     this.handleResetGame = this.handleResetGame.bind(this);
     this.handleChange = this.handleChange.bind(this);
   }
 
   handleResetGame(event) {
     event.preventDefault();
-    this.setState(initialState);
+    this.setState(createInitialState());
   }
 
   handleChange(event) {
@@ -69,32 +82,38 @@ class Hangman extends Component {
     });
   }
 
-  handleLetterClick(idx) {
-    console.log(alphabet[idx]);
-    // this.setState(initialState);
+  handleLetterClick(idx, chr) {
+    // console.log(this.state.alphabet[idx][0], this.state.alphabet[idx][1]);
+    this.setState(prevState => {
+      let newAlpha = [...this.state.alphabet];
+      newAlpha[idx][1] = false;
+      return { alphabet: newAlpha };
+    });
   }
 
   render() {
-    let game = gameWord.map(chr => {
-      return <span> ____ </span>;
-    });
-    let letters = alphabet.map((chr, idx) => {
+    let letters = this.state.alphabet.map((arr, idx) => {
       return (
         <Letter
           key={idx}
-          chr={chr}
-          handleClick={this.handleLetterClick.bind(this, idx)}
+          chr={arr[0]}
+          display={arr[1]}
+          handleClick={this.handleLetterClick.bind(this, idx, arr[0], arr[1])}
         />
       );
     });
+    let game = this.state.gameWord.map(chr => {
+      return <span> ____ </span>;
+    });
+
     return (
       <div>
-        <h3>Clue: {gameWord}</h3>
+        <h3>Clue: {this.state.gameWord}</h3>
         {game}
-        <div class="flex-container">{letters}</div>
+        <div className="flex-container">{letters}</div>
         <input
           onClick={this.handleResetGame}
-          class="btn"
+          className="btn"
           type="submit"
           value="Reset Game"
         />

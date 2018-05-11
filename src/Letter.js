@@ -1,8 +1,13 @@
-import React, { Component } from "react";
+import React from "react";
 import "./Letter.css";
 
-const Letter = ({ chr, handleClick }) => {
-  return <div onClick={handleClick}>{chr}</div>;
+const Letter = ({ chr, display, handleClick }) => {
+  console.log("inside letter.js", chr, display);
+  return (
+    <div className={display ? "show" : "hide"} onClick={handleClick}>
+      {chr}
+    </div>
+  );
 };
 
 export default Letter;
