@@ -1,24 +1,60 @@
 import React, { Component } from "react";
-import Alphabet from "./Alphabet";
+import Letter from "./Letter";
 import "./Hangman.css";
 import hangman0 from "./images/Hangman-0.png";
+import hangman1 from "./images/Hangman-1.png";
+import hangman2 from "./images/Hangman-2.png";
+import hangman3 from "./images/Hangman-3.png";
+import hangman4 from "./images/Hangman-4.png";
+import hangman5 from "./images/Hangman-5.png";
+import hangman6 from "./images/Hangman-6.png";
+
+const alphabet = [
+  "A",
+  "B",
+  "C",
+  "D",
+  "E",
+  "F",
+  "G",
+  "H",
+  "I",
+  "J",
+  "K",
+  "L",
+  "M",
+  "N",
+  "O",
+  "P",
+  "Q",
+  "R",
+  "S",
+  "T",
+  "U",
+  "V",
+  "W",
+  "X",
+  "Y",
+  "Z"
+];
+
+const words = ["RUN FOREST RUN", "HELLO HANGMAN", "RUBY ON RAILS", "PYTHON"];
+let gameWord = words[Math.floor(words.length * Math.random())].split("");
 
 const initialState = {
   guess: ["", "", "", "", "", "", "", "", "", ""],
   potentialTries: 6
 };
 
-const words = ["HELLO WORLD", "HELLO HANGMAN"];
-
 class Hangman extends Component {
   constructor(props) {
     super(props);
     this.state = initialState;
-    this.handleReset = this.handleReset.bind(this);
+    this.handleResetGame = this.handleResetGame.bind(this);
     this.handleChange = this.handleChange.bind(this);
   }
 
-  handleReset(event) {
+  handleResetGame(event) {
     event.preventDefault();
     this.setState(initialState);
   }
@@ -33,80 +69,31 @@ class Hangman extends Component {
     });
   }
 
+  handleLetterClick(idx) {
+    console.log(alphabet[idx]);
+    // this.setState(initialState);
+  }
+
   render() {
-    let display = words[0].split("").map(chr => {
+    let game = gameWord.map(chr => {
       return <span> ____ </span>;
     });
-
+    let letters = alphabet.map((chr, idx) => {
+      return (
+        <Letter
+          key={idx}
+          chr={chr}
+          handleClick={this.handleLetterClick.bind(this, idx)}
+        />
+      );
+    });
     return (
       <div>
-        <h3>Hello Hangman</h3>
-        {display}
-        {/* <form onSubmit={this.handleReset}>
-          <input
-            name="0"
-            onChange={this.handleChange}
-            value={this.state.guess[0]}
-            size="5"
-          />
-          <input
-            name="1"
-            onChange={this.handleChange}
-            value={this.state.guess[1]}
-            size="5"
-          />
-          <input
-            name="2"
-            onChange={this.handleChange}
-            value={this.state.guess[2]}
-            size="5"
-          />
-          <input
-            name="3"
-            onChange={this.handleChange}
-            value={this.state.guess[3]}
-            size="5"
-          />
-          <input
-            name="4"
-            onChange={this.handleChange}
-            value={this.state.guess[4]}
-            size="5"
-          />
-          <input
-            name="5"
-            onChange={this.handleChange}
-            value={this.state.guess[5]}
-            size="5"
-          />
-          <input
-            name="6"
-            onChange={this.handleChange}
-            value={this.state.guess[6]}
-            size="5"
-          />
-          <input
-            name="7"
-            onChange={this.handleChange}
-            value={this.state.guess[7]}
-            size="5"
-          />
-          <input
-            name="8"
-            onChange={this.handleChange}
-            value={this.state.guess[8]}
-            size="5"
-          />
-          <input
-            name="9"
-            onChange={this.handleChange}
-            value={this.state.guess[9]}
-            size="5"
-          />
-        </form> */}
-        <Alphabet />
+        <h3>Clue: {gameWord}</h3>
+        {game}
+        <div class="flex-container">{letters}</div>
         <input
-          onClick={this.handleReset}
+          onClick={this.handleResetGame}
           class="btn"
           type="submit"
           value="Reset Game"
